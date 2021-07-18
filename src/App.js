@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Component, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 import Spinner from "../src/components/Loader/Loader";
@@ -8,62 +8,61 @@ import ImageGalery from "./components/ImageGallery/ImageGallery";
 import Button from "../src/components/Button/Button";
 import Modal from "./components/Modal/Modal";
 
+const Status = {
+  IDLE: "idle",
+  PENDING: "pending",
+  RESOLVED: "resolved",
+  REJECTED: "rejected",
+};
+
 function App() {
   const [images, setImages] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [error, setError] = useState(null);
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState(Status.IDLE);
 
   useEffect(() => {
+    if (!searchQuery) return;
+    setStatus(Status.PENDING);
+
     imagesAPI(searchQuery, page)
       .then(({ hits }) => {
-        setImages([...hits]);
-        setStatus("resolved");
+        if (hits.length === 0) {
+          toast.error("Oops.. no images found", {
+            duration: 4000,
+            position: "top-right",
+          });
+        } else {
+          setImages((prev) => [...prev, ...hits]);
+          setStatus(Status.RESOLVED);
+
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: "smooth",
+          });
+        }
       })
       .catch((error) => setError(error));
   }, [searchQuery, page]);
 
   const handleSearchForm = (imageName) => {
     setSearchQuery(imageName);
+    setPage(1);
+    setImages([]);
   };
 
-  // const fetchImages=(searchQuery, page)=> {
-  //   imagesAPI(searchQuery, page)
-  //     .then(({ hits }) => {
-  //       if (hits.length === 0) {
-  //         toast.error("Oops.. no images found", {
-  //           duration: 4000,
-  //           position: "top-right",
-  //         });
-  //       } else {
-  //         setImages([...images, ...hits])
-  //         setStatus('resolved');
+  const onBtnSearch = () => setPage((page) => page + 1);
 
-  //         window.scrollTo({
-  //           top: document.documentElement.scrollHeight,
-  //           behavior: "smooth",
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => setError(error));
-  // }
-
-  const onBtnSearch = () => {
-    setPage(page + 1);
-  };
-
-  const toggleModal = (data) => {
-    setSelectedImg(data);
-  };
+  const toggleModal = (data) => setSelectedImg(data);
 
   return (
     <div className="App">
       <Searchbar onSubmit={handleSearchForm}></Searchbar>
-      {status === "pending" && <Spinner />}
-      {status === "resolved" && (
+      {status === Status.PENDING && <Spinner />}
+
+      {status === Status.RESOLVED && (
         <>
           <ImageGalery handleOpenModal={toggleModal} images={images} />
           <Button onClick={onBtnSearch} />
@@ -72,10 +71,14 @@ function App() {
           )}
         </>
       )}
+
       <Toaster />
     </div>
   );
 }
+
+export default App;
+
 // class App extends Component {
 //   state = {
 //     images: [],
@@ -161,4 +164,4 @@ function App() {
 //   }
 // }
 
-export default App;
+// export default App;
