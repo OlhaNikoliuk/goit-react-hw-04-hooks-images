@@ -8,7 +8,6 @@ function fetchImages(searchQuery, page) {
     if (response.ok) {
       return response.json();
     }
-    console.log(response);
     return Promise.reject(new Error("Can`t find image with entered name"));
   });
 }

@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-import { Overlay, ModalWindow } from "./Modal.styled";
+import { Overlay, ModalWindow } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
 function Modal({ onCloseModal, selectedImg }) {
   useEffect(() => {
-  window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, );
+  });
 
   function handleKeyDown(e) {
-    if (e.code === "Escape") {
+    if (e.code === 'Escape') {
       onCloseModal();
     }
   }
@@ -29,10 +29,10 @@ function Modal({ onCloseModal, selectedImg }) {
   return createPortal(
     <Overlay onClick={handleBackdropClick}>
       <ModalWindow>
-         <img src={selectedImg} alt="" />
-       </ModalWindow>
+        <img src={selectedImg} alt='' />
+      </ModalWindow>
     </Overlay>,
-    modalRoot,
+    modalRoot
   );
 }
 
@@ -40,4 +40,3 @@ Modal.propTypes = {
   onCloseModal: PropTypes.func.isRequired,
 };
 export default Modal;
-

@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   SearchBar,
@@ -8,64 +7,104 @@ import {
   SearchFormBtn,
   SearchFormButtonLabel,
   SearchFormInput,
-} from "./Searchbar.styled";
+} from './Searchbar.styled';
 
-const INITIAL_STATE = {
-  searchQuery: "",
-};
+function Searchbar({ onSubmit }) {
+  const [searchQuery, setSearchQuery] = useState('');
 
-class Searchbar extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-  };
+  const onInputChange = (e) =>
+    setSearchQuery(e.currentTarget.value.toLowerCase());
 
-  state = {
-    ...INITIAL_STATE,
-  };
-
-  onInputChange = (e) => {
-    this.setState({ searchQuery: e.currentTarget.value.toLowerCase() });
-  };
-
-  onFormSubmit = (e) => {
+  const onFormSubmit = (e) => {
     e.preventDefault();
-    const { searchQuery } = this.state;
 
-    if (searchQuery.trim() === "") {
+    if (searchQuery.trim() === '') {
       //сюда можно добавить нормальную нотификашку
-      alert("Enter search image");
+      alert('Enter search image');
       return;
     }
-    this.props.onSubmit(searchQuery);
-    this.formReset()
-
+    onSubmit(searchQuery);
+    setSearchQuery('');
   };
 
-  formReset = () => {
-    this.setState({ ...INITIAL_STATE });
-  };
+  return (
+    <SearchBar>
+      <SearchForm onSubmit={onFormSubmit}>
+        <SearchFormBtn type='submit'>
+          <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+        </SearchFormBtn>
 
-  render() {
-    const { searchQuery } = this.state;
-    return (
-      <SearchBar>
-        <SearchForm onSubmit={this.onFormSubmit}>
-          <SearchFormBtn type="submit">
-            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
-          </SearchFormBtn>
-
-          <SearchFormInput
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            onChange={this.onInputChange}
-            value={searchQuery}
-          />
-        </SearchForm>
-      </SearchBar>
-    );
-  }
+        <SearchFormInput
+          type='text'
+          autoComplete='off'
+          autoFocus
+          placeholder='Search images and photos'
+          onChange={onInputChange}
+          value={searchQuery}
+        />
+      </SearchForm>
+    </SearchBar>
+  );
 }
 
 export default Searchbar;
+
+// const INITIAL_STATE = {
+//   searchQuery: "",
+// };
+
+// class Searchbar extends Component {
+//   static propTypes = {
+//     onSubmit: PropTypes.func.isRequired,
+//   };
+
+//   state = {
+//     ...INITIAL_STATE,
+//   };
+
+//   onInputChange = (e) => {
+//     this.setState({ searchQuery: e.currentTarget.value.toLowerCase() });
+//   };
+
+//   onFormSubmit = (e) => {
+//     e.preventDefault();
+//     const { searchQuery } = this.state;
+
+//     if (searchQuery.trim() === "") {
+//       //сюда можно добавить нормальную нотификашку
+//       alert("Enter search image");
+//       return;
+//     }
+//     this.props.onSubmit(searchQuery);
+//     this.formReset()
+
+//   };
+
+//   formReset = () => {
+//     this.setState({ ...INITIAL_STATE });
+//   };
+
+//   render() {
+//     const { searchQuery } = this.state;
+//     return (
+//       <SearchBar>
+//         <SearchForm onSubmit={this.onFormSubmit}>
+//           <SearchFormBtn type="submit">
+//             <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+//           </SearchFormBtn>
+
+//           <SearchFormInput
+//             type="text"
+//             autoComplete="off"
+//             autoFocus
+//             placeholder="Search images and photos"
+//             onChange={this.onInputChange}
+//             value={searchQuery}
+//           />
+//         </SearchForm>
+//       </SearchBar>
+//     );
+//   }
+// }
+
+// export default Searchbar;
