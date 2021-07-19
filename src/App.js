@@ -26,8 +26,10 @@ function App() {
     if (!searchQuery) {
       return;
     }
+    if (page === 1) {
+      setStatus(Status.PENDING);
+    }
 
-    setStatus(Status.PENDING);
     imagesAPI(searchQuery, page)
       .then(({ hits }) => {
         if (hits.length === 0) {
@@ -48,9 +50,9 @@ function App() {
   }, [searchQuery, page]);
 
   const handleSearchForm = (imageName) => {
-    setSearchQuery(imageName);
     setPage(1);
     setImages([]);
+    setSearchQuery(imageName);
   };
 
   const onBtnSearch = () => setPage((page) => page + 1);
@@ -61,11 +63,10 @@ function App() {
     <div className="App">
       <Searchbar onSubmit={handleSearchForm}></Searchbar>
       {status === Status.PENDING && <Spinner />}
-
       {status === Status.RESOLVED && (
         <>
           <ImageGalery handleOpenModal={toggleModal} images={images} />
-          <Button onClick={onBtnSearch} />
+          {images.length !== 0 && <Button onClick={onBtnSearch} />}
           {selectedImg && (
             <Modal selectedImg={selectedImg} onCloseModal={toggleModal} />
           )}
