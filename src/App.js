@@ -26,9 +26,9 @@ function App() {
     if (!searchQuery) {
       return;
     }
-    if (page === 1) {
-      setStatus(Status.PENDING);
-    }
+    // if (page === 1) {
+    setStatus(Status.PENDING);
+    // }
 
     imagesAPI(searchQuery, page)
       .then(({ hits }) => {
