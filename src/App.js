@@ -26,9 +26,8 @@ function App() {
     if (!searchQuery) {
       return;
     }
-    // if (page === 1) {
+
     setStatus(Status.PENDING);
-    // }
 
     imagesAPI(searchQuery, page)
       .then(({ hits }) => {
@@ -63,10 +62,10 @@ function App() {
     <div className="App">
       <Searchbar onSubmit={handleSearchForm}></Searchbar>
       {status === Status.PENDING && <Spinner />}
-      {status === Status.RESOLVED && (
+      {images.length !== 0 && (
         <>
           <ImageGalery handleOpenModal={toggleModal} images={images} />
-          {images.length !== 0 && <Button onClick={onBtnSearch} />}
+          {<Button onClick={onBtnSearch} />}
           {selectedImg && (
             <Modal selectedImg={selectedImg} onCloseModal={toggleModal} />
           )}
